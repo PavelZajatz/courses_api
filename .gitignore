@@ -1,0 +1,11 @@
+# Cached files
+__pycache__
+.pytest_cache
+*.pyc
+
+# IDE files
+.idea
+venv
+
+# Db
+db.sqlite
