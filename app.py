@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 import os
@@ -41,19 +41,31 @@ course_schema = CourseSchema()
 courses_schema = CourseSchema(many=True)
 
 
+@app.errorhandler(400)
+def not_found(error):
+    return make_response(jsonify({'error': 'Bad request'}), 400)
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
 # Create a Course
 @app.route('/course', methods=['POST'])
 def add_course():
+    if not request.json or 'title' not in request.json or 'start_date' not in request.json \
+            or 'finish_date' not in request.json or 'qty' not in request.json:
+        abort(400)
     title = request.json['title']
     start_date = request.json['start_date']
     finish_date = request.json['finish_date']
     qty = request.json['qty']
-
     new_course = Course(title, start_date, finish_date, qty)
 
     db.session.add(new_course)
     db.session.commit()
-    return course_schema.jsonify(new_course)
+    return course_schema.jsonify(new_course), 201
 
 
 # Get All Courses
@@ -61,21 +73,27 @@ def add_course():
 def get_courses():
     all_courses = Course.query.all()
     result = courses_schema.dump(all_courses)
-    return jsonify(result)
+    return jsonify(result), 200
 
 
 # Get Single Course
 @app.route('/course/<id>', methods=['GET'])
 def get_course(id):
     course = Course.query.get(id)
-    return course_schema.jsonify(course)
+    if not course:
+        abort(404)
+    return course_schema.jsonify(course), 200
 
 
 # Update a Course
 @app.route('/course/<id>', methods=['PUT'])
 def update_course(id):
+    if not request.json or 'title' not in request.json or 'start_date' not in request.json \
+            or 'finish_date' not in request.json or 'qty' not in request.json:
+        abort(400)
     course = Course.query.get(id)
-
+    if not course:
+        abort(404)
     title = request.json['title']
     start_date = request.json['start_date']
     finish_date = request.json['finish_date']
@@ -88,17 +106,20 @@ def update_course(id):
 
     db.session.commit()
 
-    return course_schema.jsonify(course)
+    return course_schema.jsonify(course), 200
 
 
 # Delete Course
 @app.route('/course/<id>', methods=['DELETE'])
 def delete_course(id):
     course = Course.query.get(id)
-    db.session.delete(course)
-    db.session.commit()
+    if not course:
+        abort(404)
+    else:
+        db.session.delete(course)
+        db.session.commit()
 
-    return course_schema.jsonify(course)
+        return course_schema.jsonify(course), 200
 
 
 # Run Server
