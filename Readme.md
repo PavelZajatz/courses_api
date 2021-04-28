@@ -26,3 +26,9 @@ python app.py
 * POST    /course
 * PUT     /course/:id
 * DELETE  /course/:id
+
+## Tests
+``` bash
+# Run tests
+pytest
+```

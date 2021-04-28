@@ -85,12 +85,20 @@ def get_course(id):
     return course_schema.jsonify(course), 200
 
 
+# GSearch a Course
+@app.route('/course?searchString=<searchString>', methods=['GET'])
+def search_course(searchString):
+    all_courses = {}
+    courses = Course.query.all()
+    for course in courses:
+        if searchString.lower() in course['title'].lower():
+            all_courses.update(course)
+    return course_schema.jsonify(all_courses), 200
+
+
 # Update a Course
 @app.route('/course/<id>', methods=['PUT'])
 def update_course(id):
-    if not request.json or 'title' not in request.json or 'start_date' not in request.json \
-            or 'finish_date' not in request.json or 'qty' not in request.json:
-        abort(400)
     course = Course.query.get(id)
     if not course:
         abort(404)
