@@ -1,8 +1,8 @@
-# REST API With Flask & SQL Alchemy
+# REST API With Flask & SQL Alchemy(SQLite)
 
-> Products API using Python Flask, SQL Alchemy and Marshmallow
+> Course API using Python Flask, SQL Alchemy and Marshmallow
 
-## Quick Start Using Pipenv
+## Quick Start
 
 ``` bash
 
