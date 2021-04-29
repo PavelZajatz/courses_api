@@ -70,12 +70,21 @@ def add_course():
     return course_schema.jsonify(new_course), 201
 
 
-# Get All Courses
+# Get All Courses or only Searched courses
 @app.route('/course', methods=['GET'])
 def get_courses():
-    all_courses = Course.query.all()
-    result = courses_schema.dump(all_courses)
-    return jsonify(result), 200
+    search_string = request.args.get('searchString')
+    if search_string:
+        result = Course.query.filter(Course.title.like(f'%{search_string}%')).all()
+        print(result)
+        if len(result) != 0:
+            return courses_schema.jsonify(result), 200
+        else:
+            return make_response(jsonify({'message': 'No courses found'}), 200)
+    else:
+        all_courses = Course.query.all()
+        result = courses_schema.dump(all_courses)
+        return jsonify(result), 200
 
 
 # Get Single Course
@@ -87,30 +96,12 @@ def get_course(id):
     return course_schema.jsonify(course), 200
 
 
-@app.route("/coursess", methods=['GET'])
+@app.route("/courses", methods=['GET'])
 def search():
     search_string = request.args.get('searchString')
-    cources = Course.query.filter(Course.title.contains(search_string))
-    print(cources)
-    return cources
-
-
-# @app.route("/course", methods=['GET'])
-# def query():
-#     if request.args:
-#
-#         # We have our query string nicely serialized as a Python dictionary
-#         args = request.args
-#
-#         # We'll create a string to display the parameters & values
-#         serialized = ", ".join(f"{k}: {v}" for k, v in args.items())
-#
-#         # Display the query string to the client in a different format
-#         return f"(Query) {serialized}", 200
-#
-#     else:
-#
-#         return "No query string received", 200
+    result = Course.query.filter(Course.title.like(f'%{search_string}%')).all()
+    print(result)
+    return courses_schema.jsonify(result), 200
 
 
 # Update a Course
