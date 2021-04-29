@@ -10,7 +10,7 @@ class TestAPI:
             "finish_date": "30.05.2020",
             "qty": 30,
             "start_date": "01.05.2020",
-            "title": "Python"
+            "title": "Python for beginners"
         }
         response = requests.post(url=course_url, json=payload)
 

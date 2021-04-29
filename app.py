@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, abort, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from sqlalchemy import literal
 import os
 
 # Init app
@@ -17,6 +18,7 @@ ma = Marshmallow(app)
 
 # Course Class/Model
 class Course(db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), unique=True)
     start_date = db.Column(db.String(10))
@@ -85,15 +87,30 @@ def get_course(id):
     return course_schema.jsonify(course), 200
 
 
-# GSearch a Course
-@app.route('/course?searchString=<searchString>', methods=['GET'])
-def search_course(searchString):
-    all_courses = {}
-    courses = Course.query.all()
-    for course in courses:
-        if searchString.lower() in course['title'].lower():
-            all_courses.update(course)
-    return course_schema.jsonify(all_courses), 200
+@app.route("/coursess", methods=['GET'])
+def search():
+    search_string = request.args.get('searchString')
+    cources = Course.query.filter(Course.title.contains(search_string))
+    print(cources)
+    return cources
+
+
+# @app.route("/course", methods=['GET'])
+# def query():
+#     if request.args:
+#
+#         # We have our query string nicely serialized as a Python dictionary
+#         args = request.args
+#
+#         # We'll create a string to display the parameters & values
+#         serialized = ", ".join(f"{k}: {v}" for k, v in args.items())
+#
+#         # Display the query string to the client in a different format
+#         return f"(Query) {serialized}", 200
+#
+#     else:
+#
+#         return "No query string received", 200
 
 
 # Update a Course
