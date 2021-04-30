@@ -79,5 +79,5 @@ curl --location --request DELETE 'http://localhost:5000/course/1'
 ## Tests
 ``` bash
 # Run tests:
-pytest
+>> pytest
 ```

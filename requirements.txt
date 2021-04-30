@@ -24,3 +24,4 @@ toml==0.10.2
 urllib3==1.26.4
 Werkzeug==1.0.1
 marshmallow-sqlalchemy
+python-dateutil
