@@ -47,7 +47,7 @@ curl --location --request GET 'http://localhost:5000/course'
 curl --location --request GET 'http://localhost:5000/course/1'
 
 # Find a course by title:
-curl --location --request GET 'http://localhost:5000/course?searchString=python'
+curl --location --request GET 'http://localhost:5000/course?searchString=test'
 
 # Filter courses by start day
 curl --location --request GET 'http://localhost:5000/course?startCourseFrom=1622103552000&  
@@ -58,7 +58,7 @@ curl --location --request GET 'http://localhost:5000/course?finishCourseFrom=162
 finishCourseTo=1627373952000'
 
 # Filter courses by start and finish days
-curl --location --request GET 'http://localhost:5000/course?startCourseFrom=1622103552000&  
+curl --location --request GET 'http://localhost:5000/course?startCourseFrom=1622103552000&
 startCourseTo=1627373952000&finishCourseFrom=1622103552000&finishCourseTo=1627373952000'
 
 # Update a course:
